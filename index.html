@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BattleTactics 2.0 - Strategy War Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ============ CSS (INSIDE HTML) ============ -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #263c6f 0, #050915 45%, #01040b 100%);
+            color: #e3f2fd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .app-shell {
+            background: rgba(4, 8, 20, 0.92);
+            border-radius: 18px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            max-width: 1100px;
+            width: 100%;
+            min-height: 580px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(120, 144, 156, 0.4);
+        }
+
+        header {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(120, 144, 156, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(21, 101, 192, 0.7), rgba(2, 119, 189, 0.3));
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        header small {
+            font-size: 11px;
+            text-align: right;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            padding: 14px 16px 16px;
+            gap: 14px;
+        }
+
+        footer {
+            padding: 6px 14px 10px;
+            font-size: 11px;
+            text-align: center;
+            border-top: 1px solid rgba(120, 144, 156, 0.4);
+            color: #b0bec5;
+        }
+
+        /* Layout panels */
+        .panel {
+            background: rgba(10, 16, 35, 0.95);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(84, 110, 122, 0.6);
+        }
+
+        .panel-left {
+            flex: 0.95;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .panel-right {
+            flex: 1.05;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #90caf9;
+            margin-bottom: 4px;
+        }
+
+        .muted {
+            font-size: 12px;
+            color: #b0bec5;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 7px 9px;
+            border-radius: 7px;
+            border: 1px solid #546e7a;
+            background: #050b14;
+            color: #e3f2fd;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #42a5f5;
+            box-shadow: 0 0 0 1px rgba(66, 165, 245, 0.4);
+        }
+
+        button {
+            padding: 8px 14px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffca28, #fb8c00);
+            color: #212121;
+            box-shadow: 0 0 12px rgba(255, 171, 64, 0.6);
+        }
+
+        .btn-secondary {
+            background: #546e7a;
+            color: #eceff1;
+        }
+
+        .btn-danger {
+            background: #e53935;
+            color: #fff;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #546e7a;
+            color: #cfd8dc;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ffd54f, #ffa726);
+        }
+
+        .btn-secondary:hover {
+            background: #607d8b;
+        }
+
+        .btn-danger:hover {
+            background: #f44336;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(84, 110, 122, 0.2);
+        }
+
+        .btn-row {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #authMessage {
+            margin-top: 6px;
+            min-height: 16px;
+            font-size: 12px;
+            color: #ffcc80;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(120, 144, 156, 0.15);
+            border: 1px solid rgba(120, 144, 156, 0.4);
+        }
+
+        .pill-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .pill-dot.green {
+            background: #66bb6a;
+        }
+
+        .pill-dot.red {
+            background: #ef5350;
+        }
+
+        .grid-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #game-grid {
+            width: 320px;
+            height: 320px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(7, 1fr);
+            gap: 2px;
+            border-radius: 12px;
+            padding: 4px;
+            background: radial-gradient(circle at center, #102027 0, #000 70%);
+            box-shadow: 0 0 20px rgba(55, 71, 79, 0.9);
+            margin-bottom: 8px;
+        }
+
+        .cell {
+            border-radius: 6px;
+            border: 1px solid rgba(84, 110, 122, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: rgba(3, 8, 19, 0.9);
+        }
+
+        .cell.player {
+            background: radial-gradient(circle at top, #66bb6a, #2e7d32);
+            box-shadow: 0 0 12px rgba(102, 187, 106, 0.8);
+        }
+
+        .cell.enemy {
+            background: radial-gradient(circle at top, #ef5350, #b71c1c);
+            box-shadow: 0 0 12px rgba(244, 67, 54, 0.8);
+        }
+
+        .cell.powerup {
+            background: radial-gradient(circle at center, #ffeb3b, #f9a825);
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
+        }
+
+        .cell.obstacle {
+            background: repeating-linear-gradient(
+              135deg,
+              #263238,
+              #263238 4px,
+              #37474f 4px,
+              #37474f 8px
+            );
+        }
+
+        #gameInfoTop {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        #gameInfoTop span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag {
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(33, 150, 243, 0.18);
+            border: 1px solid rgba(33, 150, 243, 0.5);
+        }
+
+        #controls {
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin: 4px 0;
+        }
+
+        #missionLog {
+            height: 170px;
+            background: radial-gradient(circle at top left, rgba(21, 101, 192, 0.28), rgba(1, 7, 17, 0.95));
+            border-radius: 10px;
+            padding: 8px 10px;
+            overflow-y: auto;
+            font-size: 12px;
+            border: 1px solid rgba(100, 181, 246, 0.4);
+        }
+
+        #missionLog p {
+            margin-bottom: 4px;
+        }
+
+        #missionLog span.time {
+            opacity: 0.7;
+            font-size: 10px;
+        }
+
+        #advisorBox {
+            background: radial-gradient(circle at top right, rgba(76, 175, 80, 0.25), rgba(1, 10, 12, 0.95));
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 12px;
+            border: 1px solid rgba(129, 199, 132, 0.5);
+            margin-top: 8px;
+        }
+
+        #advisorBox strong {
+            font-size: 12px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .stat-card {
+            background: rgba(2, 12, 24, 0.9);
+            border-radius: 9px;
+            padding: 6px 8px;
+            border: 1px solid rgba(84, 110, 122, 0.7);
+            font-size: 11px;
+        }
+
+        .stat-label {
+            color: #b0bec5;
+        }
+
+        .stat-value {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 850px) {
+            main {
+                flex-direction: column;
+            }
+            .panel-left, .panel-right {
+                width: 100%;
+            }
+            #game-grid {
+                width: 280px;
+                height: 280px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .app-shell {
+                min-height: 0;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <!-- ============ HEADER ============ -->
+    <header>
+        <div class="brand">
+            <div class="brand-badge">BT</div>
+            <div>
+                <div class="brand-title">BattleTactics 2.0</div>
+                <div class="brand-subtitle">AI-Assisted Strategy War Simulator</div>
+            </div>
+        </div>
+        <small>
+            Frontend: HTML • CSS • JS<br>
+            Storage: LocalStorage (Simulated DB)
+        </small>
+    </header>
+
+    <!-- ============ MAIN LAYOUT ============ -->
+    <main>
+        <!-- LEFT PANEL: AUTH + DASHBOARD + SUMMARY -->
+        <section class="panel panel-left">
+            <!-- LOGIN / SIGNUP VIEW -->
+            <div id="auth-view">
+                <div class="section-title">Access Console</div>
+                <h2>Commander Login</h2>
+                <p class="muted">Create a Commander profile and your battle stats will be stored locally on this device.</p>
+
+                <label for="username">Codename (Username)</label>
+                <input type="text" id="username" placeholder="Enter your codename">
+
+                <label for="password">Security Key (Password)</label>
+                <input type="password" id="password" placeholder="Enter your security key">
+
+                <div class="btn-row">
+                    <button id="loginBtn" class="btn-primary">Login</button>
+                    <button id="signupBtn" class="btn-secondary">Signup</button>
+                    <button id="demoUserBtn" class="btn-ghost">Use Demo Commander</button>
+                </div>
+
+                <div id="authMessage"></div>
+            </div>
+
+            <!-- DASHBOARD VIEW -->
+            <div id="dashboard-view" class="hidden">
+                <div class="section-title">Command Dashboard</div>
+                <h2>Welcome, <span id="displayUser"></span></h2>
+                <p class="muted">Review your performance, select difficulty and launch the next mission.</p>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">High Score</div>
+                        <div class="stat-value" id="highScore">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Last Mission Score</div>
+                        <div class="stat-value" id="lastScore">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Missions Played</div>
+                        <div class="stat-value" id="missionsPlayed">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Recommended Difficulty</div>
+                        <div class="stat-value" id="difficultyText">Easy</div>
+                    </div>
+                </div>
+
+                <label for="difficultySelect" style="margin-top:10px;">Select Difficulty for Next Mission</label>
+                <select id="difficultySelect">
+                    <option value="easy">Easy – Learn the controls</option>
+                    <option value="medium">Medium – Balanced fight</option>
+                    <option value="hard">Hard – High risk, high reward</option>
+                </select>
+
+                <div class="btn-row">
+                    <button id="startGameBtn" class="btn-primary">Launch Mission</button>
+                    <button id="logoutBtn" class="btn-danger">Logout</button>
+                    <button id="resetUserBtn" class="btn-ghost">Clear Stats for This User</button>
+                </div>
+
+                <div id="advisorBox">
+                    <strong>Tactical AI Advisor:</strong>
+                    <p id="advisorText" style="margin-top:4px;">Complete a mission to receive personalized strategy tips.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: GAME + MISSION LOG -->
+        <section class="panel panel-right">
+            <!-- GAME VIEW -->
+            <div id="game-view" class="hidden">
+                <div class="section-title">Live Operation</div>
+                <div id="gameInfoTop">
+                    <span><span class="pill-dot green pill-dot"></span>Battlefield Online</span>
+                    <span>Difficulty: <span class="tag" id="activeDifficulty">Easy</span></span>
+                </div>
+
+                <div class="grid-wrapper">
+                    <div id="game-grid"></div>
+
+                    <div id="gameInfoBottom" style="width:100%; font-size:12px; display:flex; justify-content:space-between; margin-bottom:2px;">
+                        <span>Score: <strong id="score">0</strong></span>
+                        <span>Health: <strong id="health">3</strong></span>
+                        <span>Turns Used: <strong id="turns">0</strong>/<span id="maxTurns">0</span></span>
+                    </div>
+
+                    <div id="controls">
+                        <div class="control-row">
+                            <button data-move="up" class="btn-secondary">▲</button>
+                        </div>
+                        <div class="control-row">
+                            <button data-move="left" class="btn-secondary">◀</button>
+                            <button id="attackBtn" class="btn-primary">ATTACK</button>
+                            <button data-move="right" class="btn-secondary">▶</button>
+                        </div>
+                        <div class="control-row">
+                            <button data-move="down" class="btn-secondary">▼</button>
+                        </div>
+                        <div class="control-row" style="margin-top:4px;">
+                            <button id="backToDashboard" class="btn-ghost">Return to Command Dashboard</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREVIEW / EMPTY STATE WHEN NO GAME -->
+            <div id="no-game-view">
+                <div class="section-title">Battlefield Preview</div>
+                <p class="muted">Login as a Commander and launch a mission from the dashboard to view the live battlefield here.</p>
+                <div style="margin-top:10px; font-size:12px;">
+                    <p>Highlights of BattleTactics 2.0:</p>
+                    <ul style="margin-left:16px; margin-top:4px; line-height:1.5;">
+                        <li>7x7 tactical grid with obstacles &amp; power-ups</li>
+                        <li>Difficulty-based enemy aggression &amp; turn limits</li>
+                        <li>Persistent Commander stats using local storage</li>
+                        <li>AI-style Tactical Advisor suggestions</li>
+                        <li>Mission log panel to track turn-by-turn events</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MISSION LOG -->
+            <div style="margin-top:10px;">
+                <div class="section-title">Mission Log</div>
+                <div id="missionLog"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        All data is stored locally in the browser (no real server). This prototype demonstrates authentication, stateful gameplay,
+        basic AI-style recommendations and UI/UX for an application developer assignment.
+    </footer>
+</div>
+
+<!-- ============ JAVASCRIPT (INSIDE HTML) ============ -->
+<script>
+    // ========================
+    // GLOBAL DATA & CONSTANTS
+    // ========================
+    const GRID_SIZE = 7;
+    const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
+
+    let currentUser = null;
+    // user object: { password, highScore, lastScore, missionsPlayed }
+    let users = JSON.parse(localStorage.getItem("bt2_users") || "{}");
+
+    // game state
+    let playerPos, enemyPos, powerPos, obstacles;
+    let score, health, turns, maxTurns;
+    let currentDifficulty = "easy";
+
+    // DOM helpers
+    const $ = (id) => document.getElementById(id);
+
+    // ========================
+    // LOCAL STORAGE HELPERS
+    // ========================
+    function saveUsers() {
+        localStorage.setItem("bt2_users", JSON.stringify(users));
+    }
+
+    // ========================
+    // AUTH & DASHBOARD
+    // ========================
+    function showAuthView() {
+        $("auth-view").classList.remove("hidden");
+        $("dashboard-view").classList.add("hidden");
+        $("game-view").classList.add("hidden");
+        $("no-game-view").classList.remove("hidden");
+    }
+
+    function showDashboard() {
+        $("auth-view").classList.add("hidden");
+        $("dashboard-view").classList.remove("hidden");
+        $("game-view").classList.add("hidden");
+        $("no-game-view").classList.remove("hidden");
+    }
+
+    function showGameView() {
+        $("auth-view").classList.add("hidden");
+        $("dashboard-view").classList.add("hidden");
+        $("game-view").classList.remove("hidden");
+        $("no-game-view").classList.add("hidden");
+    }
+
+    function setAuthMessage(msg) {
+        $("authMessage").textContent = msg;
+    }
+
+    function refreshDashboard() {
+        if (!currentUser) return;
+        const user = users[currentUser];
+        $("displayUser").textContent = currentUser;
+        $("highScore").textContent = user.highScore;
+        $("lastScore").textContent = user.lastScore ?? "—";
+        $("missionsPlayed").textContent = user.missionsPlayed ?? 0;
+
+        const diff = getRecommendedDifficulty(user.highScore, user.missionsPlayed);
+        $("difficultyText").textContent = diff.label;
+        $("difficultySelect").value = diff.value;
+        updateAdvisorText(user);
+    }
+
+    function getRecommendedDifficulty(highScore, missionsPlayed) {
+        if (!missionsPlayed || highScore < 30) {
+            return { value: "easy", label: "Easy" };
+        } else if (highScore < 80) {
+            return { value: "medium", label: "Medium" };
+        } else {
+            return { value: "hard", label: "Hard" };
+        }
+    }
+
+    function updateAdvisorText(user) {
+        let msg;
+        const hs = user.highScore;
+        const missions = user.missionsPlayed ?? 0;
+        const last = user.lastScore ?? 0;
+
+        if (!missions) {
+            msg = "Start your first mission on Easy mode to get comfortable with the controls. Focus on staying away from the enemy while learning movement.";
+        } else if (hs < 30) {
+            msg = "Your current high score suggests you're still exploring the battlefield. Try to kite the enemy—keep one cell away and attack only when adjacent.";
+        } else if (hs < 80) {
+            msg = "Good progress! You can experiment with Medium difficulty. Prioritize collecting power-ups early; they help you survive longer missions.";
+        } else {
+            msg = "Impressive! You perform well under pressure. Hard mode with aggressive enemies will better match your skill. Use the edges of the map to control enemy movement.";
+        }
+
+        if (last && last < hs && hs > 0) {
+            msg += " Your last mission score was below your high score—review your moves and avoid unnecessary risks near the end of the turn limit.";
+        }
+
+        $("advisorText").textContent = msg;
+    }
+
+    // ========================
+    // MISSION LOG
+    // ========================
+    function logEvent(text) {
+        const log = $("missionLog");
+        const p = document.createElement("p");
+        const timeSpan = document.createElement("span");
+        timeSpan.className = "time";
+        const now = new Date();
+        timeSpan.textContent = "[" + now.toLocaleTimeString() + "] ";
+
+        const msgSpan = document.createElement("span");
+        msgSpan.textContent = text;
+
+        p.appendChild(timeSpan);
+        p.appendChild(msgSpan);
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function clearMissionLog() {
+        $("missionLog").innerHTML = "";
+    }
+
+    // ========================
+    // GAME CONFIG BY DIFFICULTY
+    // ========================
+    function getConfigForDifficulty(diff) {
+        // simple config structure
+        if (diff === "hard") {
+            return {
+                health: 3,
+                maxTurns: 25,
+                enemyMoveChance: 1.0,
+                powerChance: 0.15
+            };
+        } else if (diff === "medium") {
+            return {
+                health: 4,
+                maxTurns: 30,
+                enemyMoveChance: 0.8,
+                powerChance: 0.22
+            };
+        } else {
+            return {
+                health: 5,
+                maxTurns: 35,
+                enemyMoveChance: 0.6,
+                powerChance: 0.30
+            };
+        }
+    }
+
+    // ========================
+    // GAME INITIALIZATION
+    // ========================
+    function startGame() {
+        clearMissionLog();
+        logEvent("Mission launched. Secure the grid and neutralize the enemy unit.");
+
+        currentDifficulty = $("difficultySelect").value;
+        $("activeDifficulty").textContent =
+            currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+
+        const cfg = getConfigForDifficulty(currentDifficulty);
+        health = cfg.health;
+        maxTurns = cfg.maxTurns;
+        score = 0;
+        turns = 0;
+        $("maxTurns").textContent = maxTurns;
+
+        // initial positions
+        playerPos = 0;
+        enemyPos = TOTAL_CELLS - 1;
+        powerPos = null;
+        obstacles = generateObstacles();
+
+        updateHUD();
+        renderGrid();
+    }
+
+    function generateObstacles() {
+        const set = new Set();
+        // create some obstacles but leave start/end mostly free
+        while (set.size < 6) {
+            const pos = Math.floor(Math.random() * TOTAL_CELLS);
+            if (pos === 0 || pos === TOTAL_CELLS - 1) continue;
+            set.add(pos);
+        }
+        return set;
+    }
+
+    function updateHUD() {
+        $("score").textContent = score;
+        $("health").textContent = health;
+        $("turns").textContent = turns;
+    }
+
+    function renderGrid() {
+        const grid = $("game-grid");
+        grid.innerHTML = "";
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+
+            if (obstacles.has(i)) {
+                cell.classList.add("obstacle");
+            }
+            if (i === powerPos) {
+                cell.classList.add("powerup");
+                cell.textContent = "+";
+            }
+            if (i === enemyPos) {
+                cell.classList.add("enemy");
+                cell.textContent = "E";
+            }
+            if (i === playerPos) {
+                cell.classList.add("player");
+                cell.textContent = "P";
+            }
+
+            grid.appendChild(cell);
+        }
+    }
+
+    // ========================
+    // GAME MOVEMENT & ACTIONS
+    // ========================
+    function movePlayer(direction) {
+        if (health <= 0 || turns >= maxTurns) return;
+
+        let row = Math.floor(playerPos / GRID_SIZE);
+        let col = playerPos % GRID_SIZE;
+        let newRow = row;
+        let newCol = col;
+
+        if (direction === "up") newRow--;
+        if (direction === "down") newRow++;
+        if (direction === "left") newCol--;
+        if (direction === "right") newCol++;
+
+        // bounds check
+        if (newRow < 0 || newRow >= GRID_SIZE || newCol < 0 || newCol >= GRID_SIZE) {
+            logEvent("You reached the edge of the battlefield.");
+            return;
+        }
+
+        const newPos = newRow * GRID_SIZE + newCol;
+        if (obstacles.has(newPos)) {
+            logEvent("Movement blocked by terrain obstacle.");
+            return;
+        }
+
+        playerPos = newPos;
+
+        // collect power-up
+        if (playerPos === powerPos) {
+            health++;
+            score += 5;
+            powerPos = null;
+            logEvent("You captured a supply crate. +1 health, +5 score.");
+        }
+
+        // collision with enemy
+        if (playerPos === enemyPos) {
+            health--;
+            logEvent("Direct collision with enemy. You lost 1 health.");
+            if (health <= 0) {
+                updateHUD();
+                renderGrid();
+                endGame("defeat");
+                return;
+            }
+        }
+
+        turns++;
+        doEnemyTurn(); // enemy moves + possible spawn of powerups
+        updateHUD();
+        renderGrid();
+
+        checkTurnLimit();
+    }
+
+    function doEnemyTurn() {
+        const cfg = getConfigForDifficulty(currentDifficulty);
+
+        // enemy movement random with probability
+        if (Math.random() < cfg.enemyMoveChance) {
+            const moves = [-GRID_SIZE, GRID_SIZE, -1, 1];
+            const move = moves[Math.floor(Math.random() * moves.length)];
+            const candidate = enemyPos + move;
+            if (candidate >= 0 && candidate < TOTAL_CELLS && !obstacles.has(candidate)) {
+                const oldRow = Math.floor(enemyPos / GRID_SIZE);
+                const newRow = Math.floor(candidate / GRID_SIZE);
+                if (!(Math.abs(move) === 1 && oldRow !== newRow)) {
+                    enemyPos = candidate;
+                }
+            }
+        }
+
+        // enemy attacks if adjacent
+        if (isAdjacent(playerPos, enemyPos)) {
+            health--;
+            logEvent("Enemy fired at close range. You took 1 damage.");
+            if (health <= 0) {
+                endGame("defeat");
+                return;
+            }
+        }
+
+        // chance to spawn a power-up
+        if (!powerPos && Math.random() < cfg.powerChance) {
+            let pos;
+            do {
+                pos = Math.floor(Math.random() * TOTAL_CELLS);
+            } while (pos === playerPos || pos === enemyPos || obstacles.has(pos));
+            powerPos = pos;
+            logEvent("A new supply crate has been dropped on the field.");
+        }
+    }
+
+    function isAdjacent(a, b) {
+        const ar = Math.floor(a / GRID_SIZE), ac = a % GRID_SIZE;
+        const br = Math.floor(b / GRID_SIZE), bc = b % GRID_SIZE;
+        return Math.abs(ar - br) + Math.abs(ac - bc) === 1;
+    }
+
+    function attackEnemy() {
+        if (health <= 0 || turns >= maxTurns) return;
+        if (isAdjacent(playerPos, enemyPos)) {
+            const gain = currentDifficulty === "hard" ? 20 :
+                         currentDifficulty === "medium" ? 15 : 10;
+            score += gain;
+            logEvent("Successful strike! Enemy repositioned. +" + gain + " score.");
+            // enemy respawns at random new location
+            let newPos;
+            do {
+                newPos = Math.floor(Math.random() * TOTAL_CELLS);
+            } while (newPos === playerPos || obstacles.has(newPos));
+            enemyPos = newPos;
+        } else {
+            logEvent("Attack missed. Enemy is not adjacent.");
+        }
+
+        turns++;
+        doEnemyTurn();
+        updateHUD();
+        renderGrid();
+        checkTurnLimit();
+    }
+
+    function checkTurnLimit() {
+        if (turns >= maxTurns) {
+            if (score >= 40) {
+                endGame("victory");
+            } else {
+                endGame("timeout");
+            }
+        }
+    }
+
+    function endGame(reason) {
+        let msg = "Mission over.";
+        if (reason === "victory") {
+            msg = "Mission success! You maintained control of the grid.";
+        } else if (reason === "timeout") {
+            msg = "Mission timed out. Score target not reached.";
+        } else if (reason === "defeat") {
+            msg = "Mission failed. Your unit was destroyed.";
+        }
+        logEvent(msg + " Final score: " + score + ".");
+
+        alert(msg + "\nFinal score: " + score);
+
+        // update user stats
+        if (currentUser) {
+            const user = users[currentUser];
+            user.highScore = Math.max(user.highScore, score);
+            user.lastScore = score;
+            user.missionsPlayed = (user.missionsPlayed || 0) + 1;
+            saveUsers();
+            refreshDashboard();
+        }
+
+        // back to dashboard
+        showDashboard();
+    }
+
+    // ========================
+    // EVENT LISTENERS: AUTH
+    // ========================
+    $("signupBtn").onclick = () => {
+        const u = $("username").value.trim();
+        const p = $("password").value;
+
+        if (!u || !p) {
+            setAuthMessage("Please enter both codename and security key.");
+            return;
+        }
+        if (users[u]) {
+            setAuthMessage("Commander already exists. Please login.");
+            return;
+        }
+        users[u] = {
+            password: p,
+            highScore: 0,
+            lastScore: 0,
+            missionsPlayed: 0
+        };
+        saveUsers();
+        setAuthMessage("Signup successful. Now login to access the dashboard.");
+    };
+
+    $("loginBtn").onclick = () => {
+        const u = $("username").value.trim();
+        const p = $("password").value;
+
+        if (!u || !p) {
+            setAuthMessage("Please enter both codename and security key.");
+            return;
+        }
+        const user = users[u];
+        if (!user || user.password !== p) {
+            setAuthMessage("Invalid credentials. Check codename or security key.");
+            return;
+        }
+
+        currentUser = u;
+        setAuthMessage("");
+        refreshDashboard();
+        showDashboard();
+    };
+
+    $("logoutBtn").onclick = () => {
+        currentUser = null;
+        setAuthMessage("You have been logged out.");
+        showAuthView();
+    };
+
+    $("resetUserBtn").onclick = () => {
+        if (!currentUser) return;
+        if (!confirm("Reset all stats for this Commander?")) return;
+
+        users[currentUser].highScore = 0;
+        users[currentUser].lastScore = 0;
+        users[currentUser].missionsPlayed = 0;
+        saveUsers();
+        refreshDashboard();
+        logEvent("Commander stats were reset from the dashboard.");
+    };
+
+    $("demoUserBtn").onclick = () => {
+        const demoName = "demo_commander";
+        if (!users[demoName]) {
+            users[demoName] = {
+                password: "1234",
+                highScore: 45,
+                lastScore: 38,
+                missionsPlayed: 3
+            };
+            saveUsers();
+        }
+        $("username").value = demoName;
+        $("password").value = "1234";
+        setAuthMessage("Demo commander credentials filled. Press Login.");
+    };
+
+    // ========================
+    // EVENT LISTENERS: GAME
+    // ========================
+    $("startGameBtn").onclick = () => {
+        if (!currentUser) return;
+        showGameView();
+        startGame();
+    };
+
+    $("backToDashboard").onclick = () => {
+        showDashboard();
+    };
+
+    document.querySelectorAll("button[data-move]").forEach(btn => {
+        btn.onclick = () => {
+            const dir = btn.getAttribute("data-move");
+            movePlayer(dir);
+        };
+    });
+
+    $("attackBtn").onclick = () => {
+        attackEnemy();
+    };
+
+    // initial state
+    showAuthView();
+</script>
+
+</body>
+</html>
